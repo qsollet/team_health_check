@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Team Health check: {{ room }}</title>
+        <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style type="text/css">
+            body {
+                text-align: center;
+            }
+            .button {
+                cursor: pointer;
+                display: block;
+                background-position: center;
+                background-repeat: no-repeat;
+                margin: auto;
+                background-size: contain;
+            }
+            .red {
+                background-image: url('/img/red-off.png');
+            }
+            .red.voted {
+                background-image: url('/img/red-on.png');
+            }
+            .amber {
+                background-image: url('/img/amber-off.png');
+            }
+            .amber.voted {
+                background-image: url('/img/amber-on.png');
+            }
+            .green {
+                background-image: url('/img/green-off.png');
+            }
+            .green.voted {
+                background-image: url('/img/green-on.png');
+            }
+            img {
+                width: 100%;
+                max-width: 600px;
+            }
+            .name_input {
+                width: 100%;
+            }
+            .light_table {
+                border-collapse: collapse;
+            }
+            .light_table td {
+                margin: 0;
+                padding: 0;
+            }
+            .light_table img {
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="">
+            <input class="name_input" type="text" name="name" value="" placeholder="Enter your first name">
+        </div>
+        <div class="light_div">
+            <table class="light_table">
+                <tbody>
+                    <tr>
+                        <td colspan="3">
+                            <img src="/img/top.png" alt="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="/img/left.png" alt="">
+                        </td>
+                        <td>
+                            <div class="red button">
+                                <img src="/img/placeholder.png" alt="">
+                            </div>
+                        </td>
+                        <td>
+                            <img src="/img/right.png" alt="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="/img/left.png" alt="">
+                        </td>
+                        <td>
+                            <div class="amber button">
+                                <img src="/img/placeholder.png" alt="">
+                            </div>
+                        </td>
+                        <td>
+                            <img src="/img/right.png" alt="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="/img/left.png" alt="">
+                        </td>
+                        <td>
+                            <div class="green button">
+                                <img src="/img/placeholder.png" alt="">
+                            </div>
+                        </td>
+                        <td>
+                            <img src="/img/right.png" alt="">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script>
+            var red = document.querySelector('.red'),
+                amber = document.querySelector('.amber'),
+                green = document.querySelector('.green'),
+                name_input = document.querySelector('.name_input')
+            var setVote = function(vote) {
+                // Reset vote
+                var voted = document.querySelector('.voted')
+                if (voted) {
+                    voted.classList.remove('voted')
+                }
+                // set vote
+                switch (vote) {
+                    case 'R':
+                        red.classList.add('voted')
+                        break;
+                    case 'A':
+                        amber.classList.add('voted')
+                        break;
+                    case 'G':
+                        green.classList.add('voted')
+                        break;
+                }
+            }
+            var sendVote = function(vote) {
+                $.post('/ws/vote', {"vote": vote, "name": name_input.value}, function(data) {
+                    setVote(data)
+                })
+            }
+            var getVote = function() {
+                $.get('/ws/vote', function(data) {
+                    setVote(data)
+                })
+            }
+            red.onclick = function(event) {
+                sendVote('R')
+            }
+            amber.onclick = function(event) {
+                sendVote('A')
+            }
+            green.onclick = function(event) {
+                sendVote('G')
+            }
+            setInterval(function() {
+                getVote()
+            }, 2000)
+        </script>
+    </body>
+</html>
