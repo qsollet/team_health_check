@@ -1,0 +1,54 @@
+.button {
+    cursor: pointer;
+    display: block;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: auto;
+    background-size: contain;
+}
+
+.red {
+    background-image: url('/res/red-off.png');
+}
+
+.red.voted {
+    background-image: url('/res/red-on.png');
+}
+
+.amber {
+    background-image: url('/res/amber-off.png');
+}
+
+.amber.voted {
+    background-image: url('/res/amber-on.png');
+}
+
+.green {
+    background-image: url('/res/green-off.png');
+}
+
+.green.voted {
+    background-image: url('/res/green-on.png');
+}
+
+img {
+    width: 100%;
+    max-width: 600px;
+}
+
+.name_input {
+    width: 100%;
+}
+
+.light_table {
+    border-collapse: collapse;
+}
+
+.light_table td {
+    margin: 0;
+    padding: 0;
+}
+
+.light_table img {
+    display: block;
+}
