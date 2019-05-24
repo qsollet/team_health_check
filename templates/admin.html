@@ -7,187 +7,86 @@
         <script type="text/javascript" src="/res/bootstrap.bundle.min.js"></script>
         <script type="text/javascript" src="/res/vue.min.js"></script>
         <link rel="stylesheet" href="/res/bootstrap.min.css" />
-        <style type="text/css">
-            body {
-                text-align: center;
-            }
-            .buttons {
-                font-size: 3em;
-                display: flex;
-                justify-content: center;
-                line-height: 1;
-            }
-            .button {
-                cursor: pointer;
-                user-select: none;
-                padding: 0.5em;
-                margin: 0.5em;
-                color: white;
-                background-color: #00aae2;
-                font-weight: bolder;
-            }
-            .overall-div {
-                margin: 0.5em;
-            }
-            table {
-                width: 100%;
-                padding: 2em;
-                border-collapse: collapse;
-            }
-            table, th, td {
-                border: 1px solid #00aae2;
-            }
-            th {
-                height: 40px;
-                text-align: center;
-                background-color: #00aae2;
-                color: white;
-                font-weight: bolder;
-            }
-            th, td {
-                padding: 0.5em;
-            }
-            tr:nth-child(even) {
-                background-color: #f2f2f2;
-            }
-            .R.flipped {
-                background-color: red;
-            }
-            .A.flipped {
-                background-color: yellow;
-            }
-            .G.flipped {
-                background-color: green;
-            }
-            .R, .A, .G {
-                background-color: blue;
-            }
-            .T {
-                background-color: transparent;
-            }
-            .overall_input {
-                font-size: 0;
-            }
-            .overall_input.flipped {
-                font-size: inherit;
-            }
-        </style>
+        <link rel="stylesheet" href="/res/admin.css">
     </head>
     <body>
-        <div class="buttons">
-            <div class="flip button">Flip</div>
-            <div class="overall-div">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Red</th>
-                            <th>Amber</th>
-                            <th>Green</th>
-                            <th>Overall</th>
-                        </tr>
-                    </thead>
-                    <tbody id="overall">
-                        <tr>
-                            <td class="o_R result-cell overall_input">0</td>
-                            <td class="o_A result-cell overall_input">0</td>
-                            <td class="o_G result-cell overall_input">0</td>
-                            <td id="o_overall" class="">&nbsp;</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div class="" id="app">
+            <nav class="navbar navbar-primary bg-primary mb-4">
+                <span class="navbar-brand" href="#">Team Health Check Admin</span>
+                <span v-if="room != ''" class="my-sm-0">Room: {{ room }}</span>
+            </nav>
+
+            <div class="container">
+                <div class="" v-if="not_ready">
+                    <div class="form-group">
+                        <label for="room_input">Create/Join room</label>
+                        <input v-model="room" class="form-control" type="text" placeholder="Enter the room id" required autofocus />
+                        <small class="form-text text-danger">{{ invalid_room }}</small>
+                    </div>
+                    <button v-on:click="check_ready()" class="btn btn-primary" type="button">Enter</button>
+                </div>
+                <div class="" v-else>
+                    <div class="row text-center mb-4">
+                        <div class="col">
+                            <button type="button" v-on:click="unready()" class="btn btn-secondary">Back</button>
+                        </div>
+                        <div class="col">
+                            <button type="button" v-on:click="flip()" class="btn btn-primary">
+                                <span v-if="flipped">Unflip</span>
+                                <span v-else>Flip</span>
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button type="button" v-on:click="reset()" class="btn btn-warning">Reset</button>
+                        </div>
+                    </div>
+                    <div class="row text-center mb-4 border border-dark bg-light">
+                        <div class="col text-R font-weight-bold">
+                            <span v-if="flipped">
+                                {{ result.R }}
+                            </span>
+                            <span v-else>
+                                ?
+                            </span>
+                        </div>
+                        <div class="col text-A font-weight-bold">
+                            <span v-if="flipped">
+                                {{ result.A }}
+                            </span>
+                            <span v-else>
+                                ?
+                            </span>
+                        </div>
+                        <div class="col text-G font-weight-bold">
+                            <span v-if="flipped">
+                                {{ result.G }}
+                            </span>
+                            <span v-else>
+                                ?
+                            </span>
+                        </div>
+                        <div class="col overall bg-grey vote">
+                            &nbsp;
+                        </div>
+                    </div>
+                    <table class="table mb-4">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="row">Name</th>
+                                <th scope="row">Vote</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="vote in votes">
+                                <td>{{ vote.name }}</td>
+                                <td class="bg-grey vote" v-bind:class="'bg-' + vote.vote">&nbsp;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="reset button">Reset</div>
         </div>
-        <div class="">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Result</th>
-                    </tr>
-                </thead>
-                <tbody id="results"></tbody>
-            </table>
-        </div>
-        <script>
-            var flip = document.querySelector('.flip'),
-                reset = document.querySelector('.reset'),
-                results = document.querySelector('#results'),
-                overall_div = document.querySelector('#overall'),
-                flipped = false,
-                ws_key = 'kuhfiosijfe'
-            flip.onclick = function(event) {
-                flipped = !flipped
-                do_flip()
-            }
-            var do_flip = function() {
-                items = document.querySelectorAll('.result-cell')
-                for (var i = 0; i < items.length; i++) {
-                    if (flipped) {
-                        items[i].classList.add('flipped')
-                    } else {
-                        items[i].classList.remove('flipped')
-                    }
-                }
-            }
-            reset.onclick = function(event) {
-                $.get('/ws/reset/'+ws_key)
-                flipped = false
-                do_flip()
-                refresh()
-            }
-            var addRow = function(item, index) {
-                var row = results.insertRow(index)
-                row.insertCell(0).innerHTML = (item.name.length > 0 ? item.name: "No name")
-                var cell = row.insertCell(1)
-                cell.classList.add(item.vote, 'result-cell')
-                if (flipped) {
-                    cell.classList.add('flipped')
-                }
-            }
-            var printResult = function(data) {
-                results.innerHTML = ''
-                var c = 0
-                for (var i in data) {
-                    addRow(data[i], c)
-                    c++
-                }
-            }
-            var printOverall = function(data) {
-                document.querySelector('.o_R').innerHTML = data['R']
-                document.querySelector('.o_A').innerHTML = data['A']
-                document.querySelector('.o_G').innerHTML = data['G']
-                var r = data['R'] * 3 + data['A'] * 2 + data['G']
-                var d = data['R'] + data['A'] + data['G']
-                var r_div = 'T'
-                if (d > 0) {
-                    r = r / d
-                    r_div = 'R'
-                    if (r < 2.34) {
-                        r_div = 'A'
-                    }
-                    if (r < 1.67) {
-                        r_div = 'G'
-                    }
-                }
-                var el = document.querySelector('#o_overall')
-                el.classList.remove('R', 'A', 'G', 'T')
-                el.classList.add(r_div, 'result-cell')
-            }
-            var refresh = function() {
-                $.get('/ws/admin/'+ws_key, {}, function(data) {
-                    // Show the result
-                    printResult(data)
-                    // Calculate overall score
-                    var overall = {"R": 0, "A": 0, "G": 0}
-                    for (var i in data) {
-                        overall[data[i].vote]++
-                    }
-                    printOverall(overall)
-                }, 'json')
-            }
-            refresh()
-            setInterval(function() {refresh()}, 2000)
-        </script>
+
+        <script type="text/javascript" src="/res/admin.js"></script>
     </body>
 </html>

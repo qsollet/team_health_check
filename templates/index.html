@@ -21,7 +21,7 @@
                 <form>
                     <div class="form-group">
                         <label for="name_input">First name</label>
-                        <input v-model="name" class="form-control" type="text" placeholder="Enter your first name" required />
+                        <input v-model="name" class="form-control" type="text" placeholder="Enter your first name" required autofocus />
                         <small class="form-text text-danger">{{ invalid_name }}</small>
                     </div>
                     <div class="form-group">
@@ -87,8 +87,5 @@
             </div>
         </div>
         <script type="text/javascript" src="/res/client.js"></script>
-        <script type="text/javascript">
-            app.init()
-        </script>
     </body>
 </html>

@@ -1,0 +1,27 @@
+.bg-R {
+    background-color: red;
+}
+
+.text-R {
+    color: red;
+}
+
+.bg-A {
+    background-color: yellow;
+}
+
+.text-A {
+    color: yellow;
+}
+
+.bg-G {
+    background-color: green;
+}
+
+.text-G {
+    color: green;
+}
+
+.bg-grey {
+    background-color: grey !important;
+}

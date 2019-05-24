@@ -38,26 +38,19 @@ def ws_set_vote(room):
     return ''
 
 # Admin routes
-@app.route('/admin/<room>')
-def admin(room):
-    session['room'] = room
+@app.route('/admin')
+def admin():
     return send_from_directory('./templates', 'admin.html')
 
-@app.route('/ws/admin/<key>')
-def ws_admin(key):
-    # Check the key
-    if key != 'kuhfiosijfe':
-        return 'Not found', 404
+@app.route('/ws/admin/<room>')
+def ws_admin(room):
     global rooms
-    if session['room'] not in rooms:
-        rooms[session['room']] = {}
-    return json.dumps(rooms[session['room']])
+    if room not in rooms:
+        rooms[room] = {}
+    return json.dumps(rooms[room])
 
-@app.route('/ws/reset/<key>')
-def ws_reset(key):
-    # Check the key
-    if key != 'kuhfiosijfe':
-        return 'Not found', 404
+@app.route('/ws/reset/<room>')
+def ws_reset(room):
     global rooms
-    rooms[session['room']] = {}
+    rooms[room] = {}
     return 'ok'
