@@ -1,5 +1,6 @@
 var app = new Vue({
     el: '#app',
+    delimiters: ['${', '}'],
     data: {
         flipped: false,
         room: '',
@@ -55,7 +56,6 @@ var app = new Vue({
                 }
             }
             $('.overall').removeClass('bg-R bg-A bg-G').addClass('bg-' + c)
-            console.log('gb-' + c)
         },
         reset: function() {
             if (this.not_ready) {

@@ -14,7 +14,7 @@
         <div id="app" class="container">
             <nav class="navbar navbar-dark bg-dark mb-4">
                 <span class="navbar-brand" href="#">Team Health Check</span>
-                <span v-if="room != ''" class="my-sm-0 text-white">Room: {{ room }}</span>
+                <span v-if="room != ''" class="my-sm-0 text-white">Room: ${ room }</span>
             </nav>
 
             <div v-if="not_ready">
@@ -22,12 +22,12 @@
                     <div class="form-group">
                         <label for="name_input">First name</label>
                         <input v-model="name" class="form-control" type="text" placeholder="Enter your first name" required autofocus />
-                        <small class="form-text text-danger">{{ invalid_name }}</small>
+                        <small class="form-text text-danger">${ invalid_name }</small>
                     </div>
                     <div class="form-group">
                         <label for="room_input">Room</label>
                         <input v-model="room" class="form-control" type="text" placeholder="Enter the room id" required />
-                        <small class="form-text text-danger">{{ invalid_room }}</small>
+                        <small class="form-text text-danger">${ invalid_room }</small>
                     </div>
                     <button v-on:click="check_ready()" class="btn btn-primary" type="button">Enter</button>
                 </form>
@@ -86,6 +86,13 @@
                 </table>
             </div>
         </div>
+
         <script type="text/javascript" src="/res/client.js"></script>
+        <script type="text/javascript">
+            route_room = '{{ room }}'
+            if (route_room) {
+                app.room = route_room
+            }
+        </script>
     </body>
 </html>

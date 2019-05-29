@@ -2,6 +2,7 @@
 // Vuejs app
 var app = new Vue({
     el: '#app',
+    delimiters: ['${', '}'],
     data: {
         name: '',
         room: '',
@@ -11,7 +12,6 @@ var app = new Vue({
     },
     methods: {
         check_ready: function() {
-            console.log(this.name, this.room)
             if (this.name == '') {
                 this.invalid_name = 'Need to enter a name'
             } else {

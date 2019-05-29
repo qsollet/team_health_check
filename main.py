@@ -17,9 +17,10 @@ def resource_serve(path):
     return send_from_directory('./res', path)
 
 # User routes
-@app.route('/')
-def index():
-    return send_from_directory('./templates', 'index.html')
+@app.route('/', defaults={'room': ''})
+@app.route('/r/<room>')
+def index(room):
+    return render_template('index.html', room=room)
 
 def init():
     if 'uuid' not in session:
@@ -30,7 +31,7 @@ def ws_set_vote(room):
     init()
     global rooms
     if room not in rooms:
-        return 'Wait for an admin to create the room', 404
+        rooms[room] = {}
     if request.method == 'POST':
         rooms[room][session['uuid']] = {'name': request.form.get('name', 'no name'), 'vote': request.form.get('vote', '')}
     if session['uuid'] in rooms[room]:
@@ -38,9 +39,11 @@ def ws_set_vote(room):
     return ''
 
 # Admin routes
-@app.route('/admin')
-def admin():
-    return send_from_directory('./templates', 'admin.html')
+@app.route('/admin', defaults={'room': ''})
+@app.route('/admin/', defaults={'room': ''})
+@app.route('/admin/<room>')
+def admin(room):
+    return render_template('admin.html', room=room)
 
 @app.route('/ws/admin/<room>')
 def ws_admin(room):

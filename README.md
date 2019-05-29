@@ -1,5 +1,3 @@
 # Team Health Check voting app
 
-## TODOs
-
-- add abstain/reset button
+Small flask application to record vote during Team Health session.
