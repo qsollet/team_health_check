@@ -12,6 +12,7 @@ var app = new Vue({
     },
     methods: {
         check_ready: function() {
+            this.room = this.room.toLowerCase()
             if (this.name == '') {
                 this.invalid_name = 'Need to enter a name'
             } else {

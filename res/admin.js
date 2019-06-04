@@ -12,9 +12,11 @@ var app = new Vue({
             'A': 0,
             'G': 0,
         },
+        result_class: '',
     },
     methods: {
         check_ready: function() {
+            this.room = this.room.toLowerCase()
             if (this.room == '') {
                 this.invalid_room = 'Need a room name'
             } else {
@@ -28,21 +30,15 @@ var app = new Vue({
         },
         flip: function() {
             this.flipped = !this.flipped
-            if (this.flipped) {
-                $('.vote').removeClass('bg-grey')
-            } else {
-                $('.vote').addClass('bg-grey')
-            }
-            // var r = data['R'] * 3 + data['A'] * 2 + data['G']
         },
         update_result: function() {
             // reset result
             this.result = {'R': 0, 'A': 0, 'G': 0}
-            // calculate result
+            // calculate total for each color
             for (var i in this.votes) {
                 this.result[this.votes[i].vote]++
             }
-            // calculate total
+            // calculate overall color
             var q = this.result['R'] * 3 + this.result['A'] * 2 + this.result['G']
             var d = this.result['R'] + this.result['A'] + this.result['G']
             var c = 'W'
@@ -55,7 +51,7 @@ var app = new Vue({
                     c = 'G'
                 }
             }
-            $('.overall').removeClass('bg-R bg-A bg-G').addClass('bg-' + c)
+            this.result_class = 'bg-' + c
         },
         reset: function() {
             if (this.not_ready) {

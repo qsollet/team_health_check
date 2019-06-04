@@ -65,7 +65,7 @@
                                 ?
                             </span>
                         </div>
-                        <div class="col overall bg-grey vote">
+                        <div class="col overall vote" v-bind:class="[flipped ? '' : 'bg-grey', result_class]">
                             &nbsp;
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                         <tbody>
                             <tr v-for="vote in votes">
                                 <td>${ vote.name }</td>
-                                <td class="bg-grey vote" v-bind:class="'bg-' + vote.vote">&nbsp;</td>
+                                <td class="vote" v-bind:class="['bg-' + vote.vote, flipped ? '' : 'bg-grey']">&nbsp;</td>
                             </tr>
                         </tbody>
                     </table>

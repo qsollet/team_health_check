@@ -20,6 +20,7 @@ def resource_serve(path):
 @app.route('/', defaults={'room': ''})
 @app.route('/r/<room>')
 def index(room):
+    room = room.lower()
     return render_template('index.html', room=room)
 
 def init():
@@ -30,6 +31,7 @@ def init():
 def ws_set_vote(room):
     init()
     global rooms
+    room = room.lower()
     if room not in rooms:
         rooms[room] = {}
     if request.method == 'POST':
@@ -43,11 +45,13 @@ def ws_set_vote(room):
 @app.route('/admin/', defaults={'room': ''})
 @app.route('/admin/<room>')
 def admin(room):
+    room = room.lower()
     return render_template('admin.html', room=room)
 
 @app.route('/ws/admin/<room>')
 def ws_admin(room):
     global rooms
+    room = room.lower()
     if room not in rooms:
         rooms[room] = {}
     return json.dumps(rooms[room])
@@ -55,5 +59,6 @@ def ws_admin(room):
 @app.route('/ws/reset/<room>')
 def ws_reset(room):
     global rooms
+    room = room.lower()
     rooms[room] = {}
     return 'ok'
