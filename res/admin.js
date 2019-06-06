@@ -13,6 +13,7 @@ var app = new Vue({
             'G': 0,
         },
         result_class: '',
+        nb_votes: 0,
     },
     methods: {
         check_ready: function() {
@@ -41,6 +42,7 @@ var app = new Vue({
             // calculate overall color
             var q = this.result['R'] * 3 + this.result['A'] * 2 + this.result['G']
             var d = this.result['R'] + this.result['A'] + this.result['G']
+            this.nb_votes = d
             var c = 'W'
             if (d > 0) {
                 var c = 'R'
@@ -50,6 +52,9 @@ var app = new Vue({
                 if (q / d < 1.67) {
                     c = 'G'
                 }
+            } else {
+                // If no result, unflip (usually means reset by other admin)
+                this.flipped = false
             }
             this.result_class = 'bg-' + c
         },
@@ -58,8 +63,7 @@ var app = new Vue({
                 return
             }
             $.get('/ws/reset/' + this.room)
-            this.flipped = true
-            this.flip()
+            this.flipped = false
         },
         refresh: function() {
             if (this.not_ready) {
