@@ -5,7 +5,7 @@
         <title>Team Health check</title>
         <script type="text/javascript" src="/res/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="/res/bootstrap.bundle.min.js"></script>
-        <script type="text/javascript" src="/res/vue.js"></script>
+        <script type="text/javascript" src="/res/vue.min.js"></script>
         <link rel="stylesheet" href="/res/bootstrap.min.css" />
         <link rel="stylesheet" href="/res/client.css" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,6 +14,7 @@
         <div id="app" class="container">
             <nav class="navbar navbar-dark bg-dark mb-4">
                 <span class="navbar-brand" href="#">Team Health Check</span>
+                <span v-if="name != ''" class="my-sm-0 text-white">Name: ${ name }</span>
                 <span v-if="room != ''" class="my-sm-0 text-white">Room: ${ room }</span>
             </nav>
 
@@ -34,8 +35,19 @@
             </div>
 
             <div v-else>
-                <button type="button" v-on:click="vote('')" class="btn btn-info float-right">Cancel vote</button>
-                <button type="button" v-on:click="unready()" class="btn btn-secondary">Back</button>
+                <div class="row">
+                    <div class="col">
+                        <button type="button" v-on:click="unready()" class="btn btn-secondary">Back</button>
+                    </div>
+                    <div class="col">
+                        <h2>
+                            Question ${ current_question + 1 }
+                        </h2>
+                    </div>
+                    <div class="col">
+                        <button type="button" v-on:click="vote('')" class="btn btn-info float-right">Cancel vote</button>
+                    </div>
+                </div>
                 <table class="light_table mx-auto">
                     <tbody>
                         <tr>

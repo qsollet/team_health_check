@@ -17,27 +17,33 @@
             </nav>
 
             <div class="container">
-                <div class="" v-if="not_ready">
+                <div class="" v-if="page == 'init'">
                     <div class="form-group">
                         <label for="room_input">Create/Join room</label>
-                        <input v-model="room" class="form-control" type="text" placeholder="Enter the room id" required autofocus />
+                        <input id="room_input" v-model="room" class="form-control" type="text" placeholder="Enter the room id" required autofocus />
                         <small class="form-text text-danger">${ invalid_room }</small>
                     </div>
                     <button v-on:click="check_ready()" class="btn btn-primary" type="button">Enter</button>
                 </div>
-                <div class="" v-else>
+                <div class="" v-else-if="page == 'question'">
                     <div class="row text-center mb-4">
                         <div class="col">
-                            <button type="button" v-on:click="unready()" class="btn btn-secondary">Back</button>
+                            <button type="button" v-on:click="see_results()" class="btn btn-secondary">See results</button>
                         </div>
                         <div class="col">
-                            <button type="button" v-on:click="flip()" class="btn btn-primary">
+                            <button type="button" v-on:click="previous_q()" class="btn btn-secondary">Previous Question</button>
+                        </div>
+                        <div class="col">
+                            <h2>${ current_question + 1 }</h2>
+                        </div>
+                        <div class="col">
+                            <button type="button" v-on:click="next_q()" class="btn btn-info">Next Question</button>
+                        </div>
+                        <div class="col">
+                            <button type="button" v-on:click="flip()" class="btn btn-warning">
                                 <span v-if="flipped">Unflip</span>
                                 <span v-else>Flip</span>
                             </button>
-                        </div>
-                        <div class="col">
-                            <button type="button" v-on:click="reset()" class="btn btn-warning">Reset</button>
                         </div>
                     </div>
                     <div class="row text-center mb-4 border border-dark bg-light">
@@ -81,8 +87,57 @@
                         </thead>
                         <tbody>
                             <tr v-for="vote in votes">
-                                <td>${ vote.name }</td>
+                                <td>${ vote.username }</td>
                                 <td class="vote" v-bind:class="['bg-' + vote.vote, flipped ? '' : 'bg-grey']">&nbsp;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="" v-else-if="page == 'results'">
+                    <div class="row text-center mb-4">
+                        <div class="col">
+                            <button type="button" v-on:click="see_questions()" class="btn btn-secondary">Back to questions</button>
+                        </div>
+                    </div>
+                    <table class="table mb-4">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="row">Question</th>
+                                <th scope="row">Votes</th>
+                                <th scope="row">Red</th>
+                                <th scope="row">Amber</th>
+                                <th scope="row">Green</th>
+                                <th scope="row">Overall</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="r in build_result_page()">
+                                <td>
+                                    <span class="font-weight-bold">
+                                        ${ r.question }
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="font-weight-bold">
+                                        ${ r.votes }
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text-R font-weight-bold">
+                                        ${ r.red }
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text-A font-weight-bold">
+                                        ${ r.amber }
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="text-G font-weight-bold">
+                                        ${ r.green }
+                                    </span>
+                                </td>
+                                <td v-bind:class="'bg-' + r.overall">&nbsp;</td>
                             </tr>
                         </tbody>
                     </table>

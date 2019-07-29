@@ -9,6 +9,7 @@ var app = new Vue({
         not_ready: true,
         invalid_name: '',
         invalid_room: '',
+        current_question: 0,
     },
     methods: {
         check_ready: function() {
@@ -54,16 +55,18 @@ var app = new Vue({
                 return
             }
             $.post('/ws/vote/' + this.room, {"vote": vote, "name": this.name}, function(data) {
-                app.setVote(data)
-            })
+                app.setVote(data.vote)
+                app.current_question = data.question
+            }, 'json')
         },
         getVote: function() {
             if (this.not_ready) {
                 return
             }
             $.get('/ws/vote/' + this.room, function(data) {
-                app.setVote(data)
-            })
+                app.setVote(data.vote)
+                app.current_question = data.question
+            }, 'json')
         }
     },
 })
