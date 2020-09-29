@@ -1,10 +1,18 @@
-FROM python:3.6-alpine
+FROM python:3.7-slim
 
-RUN apk add build-base
-RUN mkdir /src
-COPY . /src
-WORKDIR /src
-RUN pip install -r requirements.txt
-RUN pip install gunicorn
+LABEL maintainer=quentin@sollet.fr
+
+RUN useradd --create-home --shell /bin/bash appuser
+USER appuser
+ENV PATH="/home/appuser/.local/bin:${PATH}"
+
+ENV GUNICORN_BIND_IP 0.0.0.0
+ENV GUNICORN_BIND_PORT 8080
+# Can use only one worker as using a global variable
+ENV GUNICORN_WORKER 1
+
+COPY . /home/appuser/src
+WORKDIR /home/appuser/src
+RUN pip install --user gunicorn && pip install --user -r requirements.txt
 
 ENTRYPOINT ["./run.sh"]
