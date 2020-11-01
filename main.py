@@ -1,11 +1,12 @@
 from flask import Flask, render_template, send_from_directory, session, request
+from decouple import config
 import random
 import json
 import uuid
 import string
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'aifk9042wkjefkj29e0fpowekjf!'
+app.config['SECRET_KEY'] = config('SECRET_KEY')
 
 # rooms[questions{answers}] = {room_id: [{uuid_1: {name: 'my name', vote: 'A'}, uuid_2: {name: 'my other name', vote: 'G'}}]}
 class Room():
@@ -21,7 +22,7 @@ class Room():
 
     def set_current_question(self, current_question):
         if current_question < 0:
-            return 
+            return
         if len(Room.rooms[self.name]['votes']) <= current_question:
             for i in range(current_question + 1 - len(Room.rooms[self.name]['votes'])):
                 Room.rooms[self.name]['votes'].append({})
